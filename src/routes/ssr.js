@@ -21,23 +21,13 @@ const context = {};
 
 router.use(async (req, res) => {
 
-  const index = fs.readFileSync(`${publicFolder}/index.html`, 'utf8')
+  const index = fs.readFileSync(`${publicFolder}/index.html`, 'utf8');
 
-  console.log( req.query.page )
+  ReactDOM.renderToString(<StaticRouter context={context}><App/></StaticRouter>);
 
-  let page=req.query.page ;
-
-  //const store = createStore(newsApp);
-
-  ReactDOM.renderToString(<StaticRouter context={context}><App/></StaticRouter>)
-
-  const cache = await serializeCache()
-
-  //console.log(cache)
+  const cache = await serializeCache();
 
   const html = ReactDOM.renderToString(<StaticRouter context={context}><App/></StaticRouter>)
-
-  //console.log(html)
 
   res.send(
     index
