@@ -1,13 +1,14 @@
 import React,{useState,useEffect} from 'react'
 import { useHistory,useParams } from "react-router-dom";
 import Row from './row';
-import axios from 'axios';
 import ReactLoader from './loader';
+import service from '../service/service';
 
 function App(props) {
 
   const [pageNo, setPageNo] = useState(0);
   const [data, setData] = useState(null);
+  const [error,setError]=useState(null);
   const history = useHistory();
 
   //let { page } = useParams();
@@ -38,33 +39,11 @@ function App(props) {
   }
 
 
-  const filterList=(data)=>{
-
-    let items = window.localStorage.getItem("hiddenItemskeys") ;
-    items= items !=null ? JSON.parse(items) : [];
-
-    const res = data.filter(d => {
-
-      return items.every(item => {
-        return item!=d.objectID;
-      });
-
-  });
-
-   return res.length === 0 ? data : res;
-
-  }
-
-
   useEffect(() => {
 
     console.log(p);
    
-    axios.get('https://hn.algolia.com/api/v1/search?page='+p).then((res) => {
-        let test=filterList(res.data.hits);
-        setData({'hits':test});
-      
-    })
+    service.get(p,setData,setError);
 
   },[]);
 
@@ -90,7 +69,7 @@ function App(props) {
                  </div> 
        }
 
-       {data==null && <ReactLoader/>}
+       {error!=null &&  <div className="row">{error.message}</div>}
 
     </div>
   )
