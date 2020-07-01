@@ -1,8 +1,13 @@
-import React,{useState,useEffect} from 'react'
-import { useHistory,useParams } from "react-router-dom";
+import React,{useState, useEffect} from 'react'
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import Row from './row';
 import ReactLoader from './loader';
 import service from '../service/service';
+import Chart from './chart' ;
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 function App(props) {
 
@@ -10,6 +15,10 @@ function App(props) {
   const [data, setData] = useState(null);
   const [error,setError]=useState(null);
   const history = useHistory();
+
+  let query = useQuery();
+
+  console.log(useLocation().search + " query param name :::>>> "+query.get("name"));
 
   //let { page } = useParams();
   const { page } = useParams(); // get the 'page' router param
@@ -59,13 +68,16 @@ function App(props) {
                         <div className="col-md-1" >Upvote</div>
                         <div className="col-md-8" >News Details</div>
                       </div>
-                     {
-                        data.hits.map(item => (
-                          item.title!=null? <Row pageNo={p} parentCallback={callback} item={item}  keys={item.objectID}/> :""
-                        ))
-                      }
+                       {
+                          data.hits.map(item => (
+                            item.title!=null? <Row pageNo={p} parentCallback={callback} item={item}  keys={item.objectID}/> :""
+                          ))
+                        }
                      <button className="btn btn-info" onClick={next}>Next</button>
-                     <button onClick={prev} className="btn btn-default">Prev</button>
+                     <button className="btn btn-default" onClick={prev}>Prev</button>
+                     <div className="row">
+                        <Chart data={data.hits} ></Chart>
+                      </div>
                  </div> 
        }
 
